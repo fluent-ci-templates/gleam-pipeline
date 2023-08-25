@@ -21,8 +21,8 @@
     - mv bin/dagger /usr/local/bin
     - dagger version
 
-base:
+tests:
   extends: .dagger
   script:
-    - dagger run fluentci .
+    - fluentci run gleam_pipeline
 

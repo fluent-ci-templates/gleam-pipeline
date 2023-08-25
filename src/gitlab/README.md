@@ -1,11 +1,13 @@
 # Gitlab CI
 
+[![deno module](https://shield.deno.dev/x/gleam_pipeline)](https://deno.land/x/gleam_pipeline)
 ![deno compatibility](https://shield.deno.dev/deno/^1.34)
+[![](https://img.shields.io/codecov/c/gh/fluent-ci-templates/gleam-pipeline)](https://codecov.io/gh/fluent-ci-templates/gleam-pipeline)
 
 The following command will generate a `.gitlab-ci.yml` file in your project:
 
 ```bash
-fluentci gl init
+fluentci gl init -t gleam_pipeline
 ```
 
 Generated file:
@@ -34,10 +36,10 @@ Generated file:
     - mv bin/dagger /usr/local/bin
     - dagger version
 
-base:
+tests:
   extends: .dagger
   script:
-    - dagger run fluentci .
+    - fluentci run gleam_pipeline
 
 ```
 

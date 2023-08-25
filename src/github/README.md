@@ -1,11 +1,13 @@
 # Github Actions
 
+[![deno module](https://shield.deno.dev/x/gleam_pipeline)](https://deno.land/x/gleam_pipeline)
 ![deno compatibility](https://shield.deno.dev/deno/^1.34)
+[![](https://img.shields.io/codecov/c/gh/fluent-ci-templates/gleam-pipeline)](https://codecov.io/gh/fluent-ci-templates/gleam-pipeline)
 
-The following command will generate a `.github/workflows/base.yml` file in your project:
+The following command will generate a `.github/workflows/workflow.yml` file in your project:
 
 ```bash
-fluentci gh init
+fluentci gh init -t gleam_pipeline
 ```
 
 Generated file:
@@ -19,7 +21,7 @@ on:
     branches:
       - main
 jobs:
-  tests:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -34,7 +36,7 @@ jobs:
             sudo mv bin/dagger /usr/local/bin
             dagger version
       - name: Run Dagger Pipelines
-        run: dagger run fluentci .
+        run: fluentci run gleam_pipeline
 
 ```
 

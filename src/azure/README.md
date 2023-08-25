@@ -1,11 +1,13 @@
 # Azure Pipelines
 
+[![deno module](https://shield.deno.dev/x/gleam_pipeline)](https://deno.land/x/gleam_pipeline)
 ![deno compatibility](https://shield.deno.dev/deno/^1.34)
+[![](https://img.shields.io/codecov/c/gh/fluent-ci-templates/gleam-pipeline)](https://codecov.io/gh/fluent-ci-templates/gleam-pipeline)
 
 The following command will generate a `azure-pipelines.yml` file in your project:
 
 ```bash
-fluentci ap init
+fluentci ap init -t gleam_pipeline
 ```
 
 Generated file:
@@ -17,7 +19,7 @@ trigger:
   - main
 pool:
   name: Default
-  vmImage: ubuntu-latest
+  vmImage: ugleamtu-latest
 steps:
   - script: |
         curl -fsSL https://deno.land/x/install/install.sh | sh
@@ -31,7 +33,7 @@ steps:
         sudo mv bin/dagger /usr/local/bin
         dagger version
     displayName: Setup Dagger
-  - script: dagger run fluentci .
+  - script: fluentci run gleam_pipeline
     displayName: Run Dagger Pipelines
 
 ```

@@ -1,11 +1,13 @@
 # AWS CodePipeline
 
+[![deno module](https://shield.deno.dev/x/gleam_pipeline)](https://deno.land/x/gleam_pipeline)
 ![deno compatibility](https://shield.deno.dev/deno/^1.34)
+[![](https://img.shields.io/codecov/c/gh/fluent-ci-templates/gleam-pipeline)](https://codecov.io/gh/fluent-ci-templates/gleam-pipeline)
 
 The following command will generate a `buildspec.yml` file in your project:
 
 ```bash
-fluentci ac init
+fluentci ac init -t gleam_pipeline
 ```
 
 Generated file:
@@ -24,9 +26,9 @@ phases:
       - curl -L https://dl.dagger.io/dagger/install.sh | DAGGER_VERSION=0.8.1 sh
       - mv bin/dagger /usr/local/bin
       - dagger version
-  build:
+  tests:
     commands:
-      - dagger run fluentci .
+      - fluentci run gleam_pipeline
   post_build:
     commands:
       - echo Build completed on `date`

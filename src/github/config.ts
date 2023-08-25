@@ -1,7 +1,7 @@
 import { JobSpec, Workflow } from "fluent_github_actions";
 
 export function generateYaml(): Workflow {
-  const workflow = new Workflow("base");
+  const workflow = new Workflow("tests");
 
   const push = {
     branches: ["main"],
@@ -34,7 +34,7 @@ export function generateYaml(): Workflow {
       },
       {
         name: "Run Dagger Pipelines",
-        run: "dagger run fluentci .",
+        run: "fluentci run gleam_pipeline",
       },
     ],
   };

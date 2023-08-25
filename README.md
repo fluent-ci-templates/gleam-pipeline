@@ -1,47 +1,66 @@
-# Base Pipeline
+# Gleam Pipeline
 
+[![deno module](https://shield.deno.dev/x/gleam_pipeline)](https://deno.land/x/gleam_pipeline)
 ![deno compatibility](https://shield.deno.dev/deno/^1.34)
+[![codecov](https://img.shields.io/codecov/c/gh/fluent-ci-templates/gleam-pipeline)](https://codecov.io/gh/fluent-ci-templates/gleam-pipeline)
 
-This repository contains a minimal pipeline for a [Fluent CI](https://fluentci.io) project. It is intended to be used as a template for new projects.
-Reusing this template will allow you to get started with Fluent CI in a matter of minutes, just run the following command:
+A ready-to-use CI/CD Pipeline for your [Gleam](https://gleam.org) projects.
+
+## 🚀 Usage
+
+Run the following command:
 
 ```bash
-fluentci init
+dagger run fluentci gleam_pipeline
 ```
 
-## Files Tree Layout
+Or, if you want to use it as a template:
 
+```bash
+fluentci init -t gleam
 ```
-src
-├── aws
-│   ├── config_test.ts    : AWS CodePipeline Config Test
-│   ├── config.ts         : AWS CodePipeline Config
-│   ├── init.ts           : Used by `fluentci ac init` command 
-│   └── README.md         : AWS CodePipeline README
-├── azure                 : Azure Pipelines YAML Generator
-│   ├── config_test.ts    : Azure Pipelines Config Test
-│   ├── config.ts         : Azure Pipelines Config
-│   ├── init.ts           : Used by `fluentci ap init` command 
-│   └── README.md         : Azure Pipelines README
-├── circleci              : Circle CI YAML Generator
-│   ├── config_test.ts    : Circle CI Config Test
-│   ├── config.ts         : Circle CI Config
-│   ├── init.ts           : Used by `fluentci cci init` command 
-│   └── README.md         : Circle CI README
-├── dagger                : Dagger pipeline files
-│   ├── index.ts          : Dagger pipeline entrypoint
-│   ├── jobs.ts           : Dagger pipeline jobs
-│   ├── list_jobs.ts      : Used by `fluentci ls` command
-│   ├── pipeline.ts       : Dagger pipeline definition
-│   └── runner.ts         : Used by `dagger run fluentci .` command
-├── github                : Github Actions YAML Generator
-│   ├── config_test.ts    : Github Actions Config Test
-│   ├── config.ts         : Github Actions Config
-│   ├── init.ts           : Used by `fluentci gh init` command
-│   └── README.md         : Github Actions README
-└── gitlab                : Gitlab CI YAML Generator
-    ├── config_test.ts    : Gitlab CI Config Test
-    ├── config.ts         : Gitlab CI Config
-    ├── init.ts           : Used by `fluentci gl init` command 
-    └── README.md         : Gitlab CI README
+
+This will create a `.fluentci` folder in your project.
+
+Now you can run the pipeline with:
+
+```bash
+dagger run fluentci .
+```
+
+Or simply:
+
+```bash
+fluentci
+```
+
+## Jobs
+
+| Job    | Description         |
+| ------ | ------------------- |
+| check  | Run type checking   |
+| format | Format source code  |
+| test   | Run the tests       |
+| build  | Build the project   |
+
+## Programmatic usage
+
+You can also use this pipeline programmatically:
+
+```ts
+import { Client, connect } from "https://esm.sh/@dagger.io/dagger@0.8.1";
+import { Dagger } from "https://deno.land/x/gleampipeline/mod.ts";
+
+const { check, format, test, build } = Dagger;
+
+function pipeline(src = ".") {
+  connect(async (client: Client) => {
+    await check(client, src);
+    await format(client, src);
+    await test(client, src);
+    await build(client, src);
+  });
+}
+
+pipeline();
 ```

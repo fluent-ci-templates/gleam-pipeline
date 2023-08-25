@@ -1,12 +1,14 @@
 # Circle CI
 
+[![deno module](https://shield.deno.dev/x/gleam_pipeline)](https://deno.land/x/gleam_pipeline)
 ![deno compatibility](https://shield.deno.dev/deno/^1.34)
+[![](https://img.shields.io/codecov/c/gh/fluent-ci-templates/gleam-pipeline)](https://codecov.io/gh/fluent-ci-templates/gleam-pipeline)
 
 
 The following command will generate a `.circleci/config.yml` file in your project:
 
 ```bash
-fluentci cci init
+fluentci cci init -t gleam_pipeline
 ```
 
 Generated file:
@@ -16,7 +18,7 @@ Generated file:
 
 version: 2.1
 jobs:
-  base:
+  tests:
     steps:
       - checkout
       - run: sudo apt-get update && sudo apt-get install -y curl unzip
@@ -31,13 +33,13 @@ jobs:
           dagger version
       - run:
           name: Run Dagger Pipelines
-          command: dagger run fluentci .
+          command: fluentci run gleam_pipeline
     machine:
       image: ubuntu-2004:2023.07.1
 workflows:
   dagger:
     jobs:
-      - base
+      - tests
 
 ```
 
