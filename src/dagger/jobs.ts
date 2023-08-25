@@ -24,7 +24,7 @@ export const check = async (client: Client, src = ".") => {
       "/root/.local/share/devbox/global",
       client.cacheVolume("devbox-global")
     )
-    .withExec(["devbox", "global", "add", "gleam"])
+    .withExec(["devbox", "global", "add", "gleam", "erlang", "rebar3"])
     .withEnvVariable("NIX_INSTALLER_NO_CHANNEL_ADD", "1")
     .withMountedCache("/app/build", client.cacheVolume("gleam-build"))
     .withDirectory("/app", context, {
@@ -54,7 +54,7 @@ export const format = async (client: Client, src = ".") => {
       "/root/.local/share/devbox/global",
       client.cacheVolume("devbox-global")
     )
-    .withExec(["devbox", "global", "add", "gleam"])
+    .withExec(["devbox", "global", "add", "gleam", "erlang", "rebar3"])
     .withEnvVariable("NIX_INSTALLER_NO_CHANNEL_ADD", "1")
     .withMountedCache("/app/build", client.cacheVolume("gleam-build"))
     .withDirectory("/app", context, {
@@ -93,7 +93,7 @@ export const test = async (client: Client, src = ".") => {
       "/root/.local/share/devbox/global",
       client.cacheVolume("devbox-global")
     )
-    .withExec(["devbox", "global", "add", "gleam"])
+    .withExec(["devbox", "global", "add", "gleam", "erlang", "rebar3"])
     .withEnvVariable("NIX_INSTALLER_NO_CHANNEL_ADD", "1")
     .withMountedCache("/app/build", client.cacheVolume("gleam-build"))
     .withDirectory("/app", context, {
@@ -128,7 +128,7 @@ export const build = async (client: Client, src = ".") => {
       "/root/.local/share/devbox/global",
       client.cacheVolume("devbox-global")
     )
-    .withExec(["devbox", "global", "add", "gleam"])
+    .withExec(["devbox", "global", "add", "gleam", "erlang", "rebar3"])
     .withEnvVariable("NIX_INSTALLER_NO_CHANNEL_ADD", "1")
     .withMountedCache("/app/build", client.cacheVolume("gleam-build"))
     .withDirectory("/app", context, {
