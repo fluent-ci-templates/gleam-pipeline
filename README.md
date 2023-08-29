@@ -5,7 +5,7 @@
 ![deno compatibility](https://shield.deno.dev/deno/^1.34)
 [![codecov](https://img.shields.io/codecov/c/gh/fluent-ci-templates/gleam-pipeline)](https://codecov.io/gh/fluent-ci-templates/gleam-pipeline)
 
-A ready-to-use CI/CD Pipeline for your [Gleam](https://gleam.org) projects.
+A ready-to-use CI/CD Pipeline for your [Gleam](https://gleam.run) projects.
 
 ## 🚀 Usage
 
