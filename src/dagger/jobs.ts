@@ -1,5 +1,5 @@
 import Client from "@fluentci.io/dagger";
-import { withDevbox } from "https://deno.land/x/nix_installer_pipeline@v0.4.1/src/dagger/steps.ts";
+import { withDevbox } from "https://nix.fluentci.io/v0.4.1/src/dagger/steps.ts";
 
 export enum Job {
   check = "check",
@@ -7,6 +7,8 @@ export enum Job {
   test = "test",
   build = "build",
 }
+
+export const exclude = [".git", ".devbox", ".fluentci", "build"];
 
 export const check = async (client: Client, src = ".") => {
   const context = client.host().directory(src);
@@ -27,9 +29,7 @@ export const check = async (client: Client, src = ".") => {
     .withExec(["devbox", "global", "add", "gleam", "erlang", "rebar3"])
     .withEnvVariable("NIX_INSTALLER_NO_CHANNEL_ADD", "1")
     .withMountedCache("/app/build", client.cacheVolume("gleam-build"))
-    .withDirectory("/app", context, {
-      exclude: [".git", ".devbox", ".fluentci", "build"],
-    })
+    .withDirectory("/app", context, { exclude })
     .withWorkdir("/app")
     .withExec(["sh", "-c", 'eval "$(devbox global shellenv)" && gleam check']);
 
@@ -57,9 +57,7 @@ export const format = async (client: Client, src = ".") => {
     .withExec(["devbox", "global", "add", "gleam", "erlang", "rebar3"])
     .withEnvVariable("NIX_INSTALLER_NO_CHANNEL_ADD", "1")
     .withMountedCache("/app/build", client.cacheVolume("gleam-build"))
-    .withDirectory("/app", context, {
-      exclude: [".git", ".devbox", ".fluentci", "build"],
-    })
+    .withDirectory("/app", context, { exclude })
     .withWorkdir("/app")
     .withExec([
       "sh",
@@ -96,9 +94,7 @@ export const test = async (client: Client, src = ".") => {
     .withExec(["devbox", "global", "add", "gleam", "erlang", "rebar3"])
     .withEnvVariable("NIX_INSTALLER_NO_CHANNEL_ADD", "1")
     .withMountedCache("/app/build", client.cacheVolume("gleam-build"))
-    .withDirectory("/app", context, {
-      exclude: [".git", ".devbox", ".fluentci", "build"],
-    })
+    .withDirectory("/app", context, { exclude })
     .withWorkdir("/app")
     .withExec([
       "sh",
@@ -131,9 +127,7 @@ export const build = async (client: Client, src = ".") => {
     .withExec(["devbox", "global", "add", "gleam", "erlang", "rebar3"])
     .withEnvVariable("NIX_INSTALLER_NO_CHANNEL_ADD", "1")
     .withMountedCache("/app/build", client.cacheVolume("gleam-build"))
-    .withDirectory("/app", context, {
-      exclude: [".git", ".devbox", ".fluentci", "build"],
-    })
+    .withDirectory("/app", context, { exclude })
     .withWorkdir("/app")
     .withExec([
       "sh",
