@@ -1,4 +1,4 @@
-import Client, { withDevbox } from "../../deps.ts";
+import Client, { connect, withDevbox } from "../../deps.ts";
 
 export enum Job {
   check = "check",
@@ -9,149 +9,165 @@ export enum Job {
 
 export const exclude = [".git", ".devbox", ".fluentci", "build"];
 
-export const check = async (client: Client, src = ".") => {
-  const context = client.host().directory(src);
-  const ctr = withDevbox(
-    client
-      .pipeline(Job.check)
-      .container()
-      .from("alpine:latest")
-      .withExec(["apk", "update"])
-      .withExec(["apk", "add", "curl", "bash"])
-      .withMountedCache("/nix", client.cacheVolume("nix"))
-      .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
-  )
-    .withMountedCache(
-      "/root/.local/share/devbox/global",
-      client.cacheVolume("devbox-global")
+export const check = async (src = ".") => {
+  await connect(async (client: Client) => {
+    const context = client.host().directory(src);
+    const ctr = withDevbox(
+      client
+        .pipeline(Job.check)
+        .container()
+        .from("alpine:latest")
+        .withExec(["apk", "update"])
+        .withExec(["apk", "add", "curl", "bash"])
+        .withMountedCache("/nix", client.cacheVolume("nix"))
+        .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
     )
-    .withExec(["devbox", "global", "add", "gleam", "erlang", "rebar3"])
-    .withEnvVariable("NIX_INSTALLER_NO_CHANNEL_ADD", "1")
-    .withMountedCache("/app/build", client.cacheVolume("gleam-build"))
-    .withDirectory("/app", context, { exclude })
-    .withWorkdir("/app")
-    .withExec(["sh", "-c", 'eval "$(devbox global shellenv)" && gleam check']);
+      .withMountedCache(
+        "/root/.local/share/devbox/global",
+        client.cacheVolume("devbox-global")
+      )
+      .withExec(["devbox", "global", "add", "gleam", "erlang", "rebar3"])
+      .withEnvVariable("NIX_INSTALLER_NO_CHANNEL_ADD", "1")
+      .withMountedCache("/app/build", client.cacheVolume("gleam-build"))
+      .withDirectory("/app", context, { exclude })
+      .withWorkdir("/app")
+      .withExec([
+        "sh",
+        "-c",
+        'eval "$(devbox global shellenv)" && gleam check',
+      ]);
 
-  const result = await ctr.stdout();
+    const result = await ctr.stdout();
 
-  console.log(result);
+    console.log(result);
+  });
+  return "done";
 };
 
-export const format = async (client: Client, src = ".") => {
-  const context = client.host().directory(src);
-  const ctr = withDevbox(
-    client
-      .pipeline(Job.format)
-      .container()
-      .from("alpine:latest")
-      .withExec(["apk", "update"])
-      .withExec(["apk", "add", "curl", "bash"])
-      .withMountedCache("/nix", client.cacheVolume("nix"))
-      .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
-  )
-    .withMountedCache(
-      "/root/.local/share/devbox/global",
-      client.cacheVolume("devbox-global")
+export const format = async (src = ".") => {
+  await connect(async (client: Client) => {
+    const context = client.host().directory(src);
+    const ctr = withDevbox(
+      client
+        .pipeline(Job.format)
+        .container()
+        .from("alpine:latest")
+        .withExec(["apk", "update"])
+        .withExec(["apk", "add", "curl", "bash"])
+        .withMountedCache("/nix", client.cacheVolume("nix"))
+        .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
     )
-    .withExec(["devbox", "global", "add", "gleam", "erlang", "rebar3"])
-    .withEnvVariable("NIX_INSTALLER_NO_CHANNEL_ADD", "1")
-    .withMountedCache("/app/build", client.cacheVolume("gleam-build"))
-    .withDirectory("/app", context, { exclude })
-    .withWorkdir("/app")
-    .withExec([
-      "sh",
-      "-c",
-      `eval "$(devbox global shellenv)" && gleam deps download`,
-    ])
-    .withExec([
-      "sh",
-      "-c",
-      'eval "$(devbox global shellenv)" && gleam format --check src test',
-    ]);
+      .withMountedCache(
+        "/root/.local/share/devbox/global",
+        client.cacheVolume("devbox-global")
+      )
+      .withExec(["devbox", "global", "add", "gleam", "erlang", "rebar3"])
+      .withEnvVariable("NIX_INSTALLER_NO_CHANNEL_ADD", "1")
+      .withMountedCache("/app/build", client.cacheVolume("gleam-build"))
+      .withDirectory("/app", context, { exclude })
+      .withWorkdir("/app")
+      .withExec([
+        "sh",
+        "-c",
+        `eval "$(devbox global shellenv)" && gleam deps download`,
+      ])
+      .withExec([
+        "sh",
+        "-c",
+        'eval "$(devbox global shellenv)" && gleam format --check src test',
+      ]);
 
-  const result = await ctr.stdout();
+    const result = await ctr.stdout();
 
-  console.log(result);
+    console.log(result);
+  });
+  return "done";
 };
 
-export const test = async (client: Client, src = ".") => {
-  const context = client.host().directory(src);
-  const ctr = withDevbox(
-    client
-      .pipeline(Job.test)
-      .container()
-      .from("alpine:latest")
-      .withExec(["apk", "update"])
-      .withExec(["apk", "add", "curl", "bash"])
-      .withMountedCache("/nix", client.cacheVolume("nix"))
-      .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
-  )
-    .withMountedCache(
-      "/root/.local/share/devbox/global",
-      client.cacheVolume("devbox-global")
+export const test = async (src = ".") => {
+  await connect(async (client: Client) => {
+    const context = client.host().directory(src);
+    const ctr = withDevbox(
+      client
+        .pipeline(Job.test)
+        .container()
+        .from("alpine:latest")
+        .withExec(["apk", "update"])
+        .withExec(["apk", "add", "curl", "bash"])
+        .withMountedCache("/nix", client.cacheVolume("nix"))
+        .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
     )
-    .withExec(["devbox", "global", "add", "gleam", "erlang", "rebar3"])
-    .withEnvVariable("NIX_INSTALLER_NO_CHANNEL_ADD", "1")
-    .withMountedCache("/app/build", client.cacheVolume("gleam-build"))
-    .withDirectory("/app", context, { exclude })
-    .withWorkdir("/app")
-    .withExec([
-      "sh",
-      "-c",
-      `eval "$(devbox global shellenv)" && gleam deps download`,
-    ])
-    .withExec(["sh", "-c", 'eval "$(devbox global shellenv)" && gleam test']);
+      .withMountedCache(
+        "/root/.local/share/devbox/global",
+        client.cacheVolume("devbox-global")
+      )
+      .withExec(["devbox", "global", "add", "gleam", "erlang", "rebar3"])
+      .withEnvVariable("NIX_INSTALLER_NO_CHANNEL_ADD", "1")
+      .withMountedCache("/app/build", client.cacheVolume("gleam-build"))
+      .withDirectory("/app", context, { exclude })
+      .withWorkdir("/app")
+      .withExec([
+        "sh",
+        "-c",
+        `eval "$(devbox global shellenv)" && gleam deps download`,
+      ])
+      .withExec(["sh", "-c", 'eval "$(devbox global shellenv)" && gleam test']);
 
-  const result = await ctr.stdout();
+    const result = await ctr.stdout();
 
-  console.log(result);
+    console.log(result);
+  });
+  return "done";
 };
 
-export const build = async (client: Client, src = ".") => {
-  const context = client.host().directory(src);
-  const ctr = withDevbox(
-    client
-      .pipeline(Job.build)
-      .container()
-      .from("alpine:latest")
-      .withExec(["apk", "update"])
-      .withExec(["apk", "add", "curl", "bash"])
-      .withMountedCache("/nix", client.cacheVolume("nix"))
-      .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
-  )
-    .withMountedCache(
-      "/root/.local/share/devbox/global",
-      client.cacheVolume("devbox-global")
+export const build = async (src = ".") => {
+  await connect(async (client: Client) => {
+    const context = client.host().directory(src);
+    const ctr = withDevbox(
+      client
+        .pipeline(Job.build)
+        .container()
+        .from("alpine:latest")
+        .withExec(["apk", "update"])
+        .withExec(["apk", "add", "curl", "bash"])
+        .withMountedCache("/nix", client.cacheVolume("nix"))
+        .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
     )
-    .withExec(["devbox", "global", "add", "gleam", "erlang", "rebar3"])
-    .withEnvVariable("NIX_INSTALLER_NO_CHANNEL_ADD", "1")
-    .withMountedCache("/app/build", client.cacheVolume("gleam-build"))
-    .withDirectory("/app", context, { exclude })
-    .withWorkdir("/app")
-    .withExec([
-      "sh",
-      "-c",
-      `eval "$(devbox global shellenv)" && gleam deps download`,
-    ])
-    .withExec(["sh", "-c", 'eval "$(devbox global shellenv)" && gleam build']);
+      .withMountedCache(
+        "/root/.local/share/devbox/global",
+        client.cacheVolume("devbox-global")
+      )
+      .withExec(["devbox", "global", "add", "gleam", "erlang", "rebar3"])
+      .withEnvVariable("NIX_INSTALLER_NO_CHANNEL_ADD", "1")
+      .withMountedCache("/app/build", client.cacheVolume("gleam-build"))
+      .withDirectory("/app", context, { exclude })
+      .withWorkdir("/app")
+      .withExec([
+        "sh",
+        "-c",
+        `eval "$(devbox global shellenv)" && gleam deps download`,
+      ])
+      .withExec([
+        "sh",
+        "-c",
+        'eval "$(devbox global shellenv)" && gleam build',
+      ]);
 
-  const result = await ctr.stdout();
+    const result = await ctr.stdout();
 
-  console.log(result);
+    console.log(result);
+  });
+  return "done";
 };
 
-export type JobExec = (
-  client: Client,
-  src?: string
-) =>
-  | Promise<void>
+export type JobExec = (src?: string) =>
+  | Promise<string>
   | ((
-      client: Client,
       src?: string,
       options?: {
         ignore: string[];
       }
-    ) => Promise<void>);
+    ) => Promise<string>);
 
 export const runnableJobs: Record<Job, JobExec> = {
   [Job.test]: test,
