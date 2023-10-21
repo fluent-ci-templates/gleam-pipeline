@@ -23,11 +23,7 @@ export const check = async (src = ".") => {
       .withDirectory("/app", context, { exclude })
       .withWorkdir("/app")
       .withExec(["gleam", "deps", "download"])
-      .withExec([
-        "sh",
-        "-c",
-        'eval "$(devbox global shellenv)" && gleam check',
-      ]);
+      .withExec(["gleam", "check"]);
 
     const result = await ctr.stdout();
 
