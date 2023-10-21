@@ -15,10 +15,12 @@ export const check = async (src = ".") => {
     const ctr = client
       .pipeline(Job.check)
       .container()
-      .from("ghcr.io/fluent-ci-templates/gleam:latest")
+      .from("pkgxdev/pkgx:latest")
+      .withExec(["pkgx", "install", "gleam"])
       .withMountedCache("/app/build", client.cacheVolume("gleam-build"))
       .withDirectory("/app", context, { exclude })
       .withWorkdir("/app")
+      .withExec(["gleam", "deps", "download"])
       .withExec([
         "sh",
         "-c",
@@ -38,20 +40,13 @@ export const format = async (src = ".") => {
     const ctr = client
       .pipeline(Job.format)
       .container()
-      .from("ghcr.io/fluent-ci-templates/gleam:latest")
+      .from("pkgxdev/pkgx:latest")
+      .withExec(["pkgx", "install", "gleam"])
       .withMountedCache("/app/build", client.cacheVolume("gleam-build"))
       .withDirectory("/app", context, { exclude })
       .withWorkdir("/app")
-      .withExec([
-        "sh",
-        "-c",
-        `eval "$(devbox global shellenv)" && gleam deps download`,
-      ])
-      .withExec([
-        "sh",
-        "-c",
-        'eval "$(devbox global shellenv)" && gleam format --check src test',
-      ]);
+      .withExec(["gleam", "deps", "download"])
+      .withExec(["gleam", "format", "--check", "src", "test"]);
 
     const result = await ctr.stdout();
 
@@ -66,16 +61,13 @@ export const test = async (src = ".") => {
     const ctr = client
       .pipeline(Job.test)
       .container()
-      .from("ghcr.io/fluent-ci-templates/gleam:latest")
+      .from("pkgxdev/pkgx:latest")
+      .withExec(["pkgx", "install", "gleam"])
       .withMountedCache("/app/build", client.cacheVolume("gleam-build"))
       .withDirectory("/app", context, { exclude })
       .withWorkdir("/app")
-      .withExec([
-        "sh",
-        "-c",
-        `eval "$(devbox global shellenv)" && gleam deps download`,
-      ])
-      .withExec(["sh", "-c", 'eval "$(devbox global shellenv)" && gleam test']);
+      .withExec(["gleam", "deps", "download"])
+      .withExec(["gleam", "test"]);
 
     const result = await ctr.stdout();
 
@@ -90,20 +82,12 @@ export const build = async (src = ".") => {
     const ctr = client
       .pipeline(Job.build)
       .container()
-      .from("ghcr.io/fluent-ci-templates/gleam:latest")
+      .from("pkgxdev/pkgx:latest")
+      .withExec(["pkgx", "install", "gleam"])
       .withMountedCache("/app/build", client.cacheVolume("gleam-build"))
       .withDirectory("/app", context, { exclude })
       .withWorkdir("/app")
-      .withExec([
-        "sh",
-        "-c",
-        `eval "$(devbox global shellenv)" && gleam deps download`,
-      ])
-      .withExec([
-        "sh",
-        "-c",
-        'eval "$(devbox global shellenv)" && gleam build',
-      ]);
+      .withExec(["gleam", "build"]);
 
     const result = await ctr.stdout();
 
