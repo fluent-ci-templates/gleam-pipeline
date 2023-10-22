@@ -1,0 +1,5 @@
+{
+  "root": "",
+  "name": "gleam",
+  "sdkRuntime": "tsiry/dagger-sdk-deno"
+}

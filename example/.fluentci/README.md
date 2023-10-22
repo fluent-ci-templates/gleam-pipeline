@@ -12,7 +12,7 @@ A ready-to-use CI/CD Pipeline for your [Gleam](https://gleam.run) projects.
 Run the following command:
 
 ```bash
-dagger run fluentci gleam_pipeline
+fluentci run gleam_pipeline
 ```
 
 Or, if you want to use it as a template:
@@ -49,17 +49,10 @@ fluentci
 You can also use this pipeline programmatically:
 
 ```ts
-import Client, { connect } from "https://sdk.fluentci.io/v0.1.7/mod.ts";
-import { check, format, test, build } from "https://pkg.fluentci.io/gleam_pipeline@v0.3.0/mod.ts";
+import { check, format, test, build } from "https://pkg.fluentci.io/gleam_pipeline@v0.4.0/mod.ts";
 
-function pipeline(src = ".") {
-  connect(async (client: Client) => {
-    await check(client, src);
-    await format(client, src);
-    await test(client, src);
-    await build(client, src);
-  });
-}
-
-pipeline();
+await check();
+await format();
+await test();
+await build();
 ```
