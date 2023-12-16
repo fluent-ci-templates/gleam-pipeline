@@ -11,6 +11,12 @@ export enum Job {
 
 export const exclude = [".git", ".devbox", ".fluentci", "build"];
 
+/**
+ * @function
+ * @description Run type checking
+ * @param {string | Directory} src
+ * @returns {Promise<string>}
+ */
 export async function check(
   src: Directory | string | undefined = "."
 ): Promise<string> {
@@ -35,6 +41,12 @@ export async function check(
   return result;
 }
 
+/**
+ * @function
+ * @description Format source code
+ * @param {string | Directory} src
+ * @returns {Promise<Directory | string>}
+ */
 export async function format(
   src: Directory | string | undefined = "."
 ): Promise<Directory | string> {
@@ -60,6 +72,12 @@ export async function format(
   return id;
 }
 
+/**
+ * @function
+ * @description Run tests
+ * @param {string | Directory} src
+ * @returns {Promise<string>}
+ */
 export async function test(
   src: Directory | string | undefined = "."
 ): Promise<string> {
@@ -84,6 +102,12 @@ export async function test(
   return result;
 }
 
+/**
+ * @function
+ * @description Build the project
+ * @param {string | Directory} src
+ * @returns {Promise<Direcotry | string>}
+ */
 export async function build(
   src: Directory | string | undefined = "."
 ): Promise<Directory | string> {
