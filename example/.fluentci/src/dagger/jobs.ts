@@ -1,4 +1,6 @@
-import Client, { connect } from "../../deps.ts";
+import { Client, Directory } from "../../sdk/client.gen.ts";
+import { connect } from "../../sdk/connect.ts";
+import { getDirectory } from "./lib.ts";
 
 export enum Job {
   check = "check",
@@ -9,9 +11,12 @@ export enum Job {
 
 export const exclude = [".git", ".devbox", ".fluentci", "build"];
 
-export const check = async (src = ".") => {
+export async function check(
+  src: Directory | string | undefined = "."
+): Promise<string> {
+  let result = "";
   await connect(async (client: Client) => {
-    const context = client.host().directory(src);
+    const context = getDirectory(client, src);
     const ctr = client
       .pipeline(Job.check)
       .container()
@@ -25,16 +30,17 @@ export const check = async (src = ".") => {
       .withExec(["gleam", "deps", "download"])
       .withExec(["gleam", "check"]);
 
-    const result = await ctr.stdout();
-
-    console.log(result);
+    result = await ctr.stdout();
   });
-  return "done";
-};
+  return result;
+}
 
-export const format = async (src = ".") => {
+export async function format(
+  src: Directory | string | undefined = "."
+): Promise<Directory | string> {
+  let id = "";
   await connect(async (client: Client) => {
-    const context = client.host().directory(src);
+    const context = getDirectory(client, src);
     const ctr = client
       .pipeline(Job.format)
       .container()
@@ -48,16 +54,18 @@ export const format = async (src = ".") => {
       .withExec(["gleam", "deps", "download"])
       .withExec(["gleam", "format", "--check", "src", "test"]);
 
-    const result = await ctr.stdout();
-
-    console.log(result);
+    await ctr.stdout();
+    id = await ctr.directory("/app/src").id();
   });
-  return "done";
-};
+  return id;
+}
 
-export const test = async (src = ".") => {
+export async function test(
+  src: Directory | string | undefined = "."
+): Promise<string> {
+  let result = "";
   await connect(async (client: Client) => {
-    const context = client.host().directory(src);
+    const context = getDirectory(client, src);
     const ctr = client
       .pipeline(Job.test)
       .container()
@@ -71,16 +79,17 @@ export const test = async (src = ".") => {
       .withExec(["gleam", "deps", "download"])
       .withExec(["gleam", "test"]);
 
-    const result = await ctr.stdout();
-
-    console.log(result);
+    result = await ctr.stdout();
   });
-  return "done";
-};
+  return result;
+}
 
-export const build = async (src = ".") => {
+export async function build(
+  src: Directory | string | undefined = "."
+): Promise<Directory | string> {
+  let id = "";
   await connect(async (client: Client) => {
-    const context = client.host().directory(src);
+    const context = getDirectory(client, src);
     const ctr = client
       .pipeline(Job.build)
       .container()
@@ -91,23 +100,18 @@ export const build = async (src = ".") => {
       .withMountedCache("/app/build", client.cacheVolume("gleam-build"))
       .withDirectory("/app", context, { exclude })
       .withWorkdir("/app")
-      .withExec(["gleam", "build"]);
+      .withExec(["gleam", "build"])
+      .withExec(["cp", "-r", "build", "/build"]);
 
-    const result = await ctr.stdout();
-
-    console.log(result);
+    await ctr.stdout();
+    id = await ctr.directory("/build").id();
   });
-  return "done";
-};
+  return id;
+}
 
-export type JobExec = (src?: string) =>
-  | Promise<string>
-  | ((
-      src?: string,
-      options?: {
-        ignore: string[];
-      }
-    ) => Promise<string>);
+export type JobExec = (
+  src: Directory | string | undefined
+) => Promise<Directory | string>;
 
 export const runnableJobs: Record<Job, JobExec> = {
   [Job.test]: test,
