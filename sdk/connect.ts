@@ -1,6 +1,6 @@
 import { Writable } from "node:stream";
-
 import { Client } from "./client.gen.ts";
+import { Context } from "./context.ts";
 
 /**
  * ConnectOpts defines option used to connect to an engine.
@@ -39,8 +39,9 @@ export interface ConnectParams {
  */
 export async function connect(
   cb: CallbackFct,
-  config: ConnectOpts = {}
+  _config: ConnectOpts = {}
 ): Promise<void> {
+<<<<<<< HEAD
   let client: Client;
   // let close: null | (() => void) = null;
 
@@ -56,17 +57,15 @@ export async function connect(
     });
     return;
   }
+=======
+  const ctx = new Context();
+  const client = new Client({ ctx: ctx });
+>>>>>>> a55626d (update sdk dir)
 
-  // Prefer DAGGER_SESSION_PORT if set
-  const daggerSessionPort = Deno.env.get("DAGGER_SESSION_PORT");
-  if (daggerSessionPort) {
-    const sessionToken = Deno.env.get("DAGGER_SESSION_TOKEN");
-    if (!sessionToken) {
-      throw new Error(
-        "DAGGER_SESSION_TOKEN must be set when using DAGGER_SESSION_PORT"
-      );
-    }
+  // Initialize connection
+  await ctx.connection();
 
+<<<<<<< HEAD
     if (config.Workdir && config.Workdir !== "") {
       throw new Error(
         "cannot configure workdir for existing session (please use --workdir or host.directory with absolute paths instead)"
@@ -85,5 +84,9 @@ export async function connect(
     if (close) {
       close();
     }
+=======
+  await cb(client).finally(() => {
+    ctx.close();
+>>>>>>> a55626d (update sdk dir)
   });
 }
