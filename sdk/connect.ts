@@ -41,52 +41,13 @@ export async function connect(
   cb: CallbackFct,
   _config: ConnectOpts = {}
 ): Promise<void> {
-<<<<<<< HEAD
-  let client: Client;
-  // let close: null | (() => void) = null;
-
-  if (Deno.env.has("FLUENTCI_TOKEN") && Deno.env.has("FLUENTCI_SESSION_ID")) {
-    const client = new Client({
-      host: Deno.env.get("FLUENTCI_HOST") || "vm.fluentci.io",
-      sessionToken: Deno.env.get("FLUENTCI_TOKEN"),
-    });
-    await cb(client).finally(() => {
-      if (close) {
-        close();
-      }
-    });
-    return;
-  }
-=======
   const ctx = new Context();
   const client = new Client({ ctx: ctx });
->>>>>>> a55626d (update sdk dir)
 
   // Initialize connection
   await ctx.connection();
 
-<<<<<<< HEAD
-    if (config.Workdir && config.Workdir !== "") {
-      throw new Error(
-        "cannot configure workdir for existing session (please use --workdir or host.directory with absolute paths instead)"
-      );
-    }
-
-    client = new Client({
-      host: `127.0.0.1:${daggerSessionPort}`,
-      sessionToken: sessionToken,
-    });
-  } else {
-    throw new Error("DAGGER_SESSION_PORT must be set");
-  }
-
-  await cb(client).finally(() => {
-    if (close) {
-      close();
-    }
-=======
   await cb(client).finally(() => {
     ctx.close();
->>>>>>> a55626d (update sdk dir)
   });
 }
