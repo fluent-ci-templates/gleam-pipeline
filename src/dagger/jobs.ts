@@ -1,5 +1,4 @@
 import { Directory, dag } from "../../deps.ts";
-import { connect } from "../../sdk/connect.ts";
 import { getDirectory } from "./lib.ts";
 
 export enum Job {
