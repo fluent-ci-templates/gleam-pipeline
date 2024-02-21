@@ -1,5 +1,0 @@
-{
-  gleam {
-    build(src: ".")
-  }
-}
