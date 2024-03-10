@@ -1,3 +1,7 @@
+/**
+ * @module gleam
+ * @description This module provides functions for Gleam projects
+ */
 import { Directory, dag } from "../../deps.ts";
 import { getDirectory } from "./lib.ts";
 
@@ -11,6 +15,8 @@ export enum Job {
 export const exclude = [".git", ".devbox", ".fluentci", "build"];
 
 /**
+ * Run type checking
+ *
  * @function
  * @description Run type checking
  * @param {string | Directory} src
@@ -19,7 +25,7 @@ export const exclude = [".git", ".devbox", ".fluentci", "build"];
 export async function check(
   src: Directory | string | undefined = "."
 ): Promise<string> {
-  const context = await getDirectory(dag, src);
+  const context = await getDirectory(src);
   const ctr = dag
     .pipeline(Job.check)
     .container()
@@ -33,11 +39,12 @@ export async function check(
     .withExec(["gleam", "deps", "download"])
     .withExec(["gleam", "check"]);
 
-  const result = await ctr.stdout();
-  return result;
+  return ctr.stdout();
 }
 
 /**
+ * Format source code
+ *
  * @function
  * @description Format source code
  * @param {string | Directory} src
@@ -46,7 +53,7 @@ export async function check(
 export async function format(
   src: Directory | string | undefined = "."
 ): Promise<Directory | string> {
-  const context = await getDirectory(dag, src);
+  const context = await getDirectory(src);
   const ctr = dag
     .pipeline(Job.format)
     .container()
@@ -61,11 +68,12 @@ export async function format(
     .withExec(["gleam", "format", "--check", "src", "test"]);
 
   await ctr.stdout();
-  const id = await ctr.directory("/app/src").id();
-  return id;
+  return ctr.directory("/app/src").id();
 }
 
 /**
+ * Run tests
+ *
  * @function
  * @description Run tests
  * @param {string | Directory} src
@@ -74,7 +82,7 @@ export async function format(
 export async function test(
   src: Directory | string | undefined = "."
 ): Promise<string> {
-  const context = await getDirectory(dag, src);
+  const context = await getDirectory(src);
   const ctr = dag
     .pipeline(Job.test)
     .container()
@@ -88,11 +96,12 @@ export async function test(
     .withExec(["gleam", "deps", "download"])
     .withExec(["gleam", "test"]);
 
-  const result = await ctr.stdout();
-  return result;
+  return ctr.stdout();
 }
 
 /**
+ * Build the project
+ *
  * @function
  * @description Build the project
  * @param {string | Directory} src
@@ -101,7 +110,7 @@ export async function test(
 export async function build(
   src: Directory | string | undefined = "."
 ): Promise<Directory | string> {
-  const context = await getDirectory(dag, src);
+  const context = await getDirectory(src);
   const ctr = dag
     .pipeline(Job.build)
     .container()
@@ -116,8 +125,7 @@ export async function build(
     .withExec(["cp", "-r", "build", "/build"]);
 
   await ctr.stdout();
-  const id = await ctr.directory("/build").id();
-  return id;
+  return ctr.directory("/build").id();
 }
 
 export type JobExec = (

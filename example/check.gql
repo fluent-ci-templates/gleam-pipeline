@@ -1,5 +1,0 @@
-{
-  gleam {
-    check(src: ".")
-  }
-}
