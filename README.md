@@ -1,9 +1,9 @@
 # Gleam Pipeline
 
-[![fluentci pipeline](https://img.shields.io/badge/dynamic/json?label=pkg.fluentci.io&labelColor=%23000&color=%23460cf1&url=https%3A%2F%2Fapi.fluentci.io%2Fv1%2Fpipeline%2Fgleam_pipeline&query=%24.version)](https://pkg.fluentci.io/gleam_pipeline)
+[![fluentci pipeline](https://shield.fluentci.io/x/gleam_pipeline)](https://pkg.fluentci.io/gleam_pipeline)
 [![deno module](https://shield.deno.dev/x/gleam_pipeline)](https://deno.land/x/gleam_pipeline)
 ![deno compatibility](https://shield.deno.dev/deno/^1.41)
-[![dagger-min-version](https://img.shields.io/badge/dagger-v0.10.0-blue?color=3D66FF&labelColor=000000)](https://dagger.io)
+[![dagger-min-version](https://shield.fluentci.io/dagger/v0.11.7)](https://dagger.io)
 [![](https://jsr.io/badges/@fluentci/gleam)](https://jsr.io/@fluentci/gleam)
 [![codecov](https://img.shields.io/codecov/c/gh/fluent-ci-templates/gleam-pipeline)](https://codecov.io/gh/fluent-ci-templates/gleam-pipeline)
 [![ci](https://github.com/fluent-ci-templates/gleam-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/fluent-ci-templates/gleam-pipeline/actions/workflows/ci.yml)
