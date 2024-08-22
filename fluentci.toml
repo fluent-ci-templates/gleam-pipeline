@@ -5,4 +5,4 @@ authors = [
 description = "CI/CD Plugin for Gleam"
 license = "MIT"
 name = "gleam"
-version = "0.8.0"
+version = "0.8.1"

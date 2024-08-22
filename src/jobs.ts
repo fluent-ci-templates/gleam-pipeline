@@ -2,8 +2,8 @@
  * @module gleam
  * @description This module provides functions for Gleam projects
  */
-import { Directory, dag } from "../../deps.ts";
-import { getDirectory } from "./lib.ts";
+import { type Directory, dag } from "../deps.ts";
+import { getDirectory } from "./helpers.ts";
 
 export enum Job {
   check = "check",
@@ -32,7 +32,7 @@ export async function check(
     .from("pkgxdev/pkgx:latest")
     .withExec(["apt-get", "update"])
     .withExec(["apt-get", "install", "-y", "ca-certificates"])
-    .withExec(["pkgx", "install", "gleam", "escript"])
+    .withExec(["pkgx", "install", "gleam", "escript", "rebar3"])
     .withMountedCache("/app/build", dag.cacheVolume("gleam-build"))
     .withDirectory("/app", context, { exclude })
     .withWorkdir("/app")
@@ -60,7 +60,7 @@ export async function format(
     .from("pkgxdev/pkgx:latest")
     .withExec(["apt-get", "update"])
     .withExec(["apt-get", "install", "-y", "ca-certificates"])
-    .withExec(["pkgx", "install", "gleam", "escript"])
+    .withExec(["pkgx", "install", "gleam", "escript", "rebar3"])
     .withMountedCache("/app/build", dag.cacheVolume("gleam-build"))
     .withDirectory("/app", context, { exclude })
     .withWorkdir("/app")
@@ -89,7 +89,7 @@ export async function test(
     .from("pkgxdev/pkgx:latest")
     .withExec(["apt-get", "update"])
     .withExec(["apt-get", "install", "-y", "ca-certificates"])
-    .withExec(["pkgx", "install", "gleam", "escript"])
+    .withExec(["pkgx", "install", "gleam", "escript", "rebar3"])
     .withMountedCache("/app/build", dag.cacheVolume("gleam-build"))
     .withDirectory("/app", context, { exclude })
     .withWorkdir("/app")
@@ -117,7 +117,7 @@ export async function build(
     .from("pkgxdev/pkgx:latest")
     .withExec(["apt-get", "update"])
     .withExec(["apt-get", "install", "-y", "ca-certificates"])
-    .withExec(["pkgx", "install", "gleam", "escript"])
+    .withExec(["pkgx", "install", "gleam", "escript", "rebar3"])
     .withMountedCache("/app/build", dag.cacheVolume("gleam-build"))
     .withDirectory("/app", context, { exclude })
     .withWorkdir("/app")

@@ -6,7 +6,7 @@ pub fn check(args: String) -> FnResult<String> {
     let stdout = dag()
         .pipeline("check")?
         .pkgx()?
-        .with_packages(vec!["gleam", "escript"])?
+        .with_packages(vec!["gleam", "escript", "rebar3"])?
         .with_exec(vec!["gleam", "deps", "download"])?
         .with_exec(vec!["gleam", "check", &args])?
         .stdout()?;
@@ -18,7 +18,7 @@ pub fn format(args: String) -> FnResult<String> {
     let stdout = dag()
         .pipeline("format")?
         .pkgx()?
-        .with_packages(vec!["gleam", "escript"])?
+        .with_packages(vec!["gleam", "escript", "rebar3"])?
         .with_exec(vec!["gleam", "deps", "download"])?
         .with_exec(vec!["gleam", "format", "--check", &args])?
         .stdout()?;
@@ -30,7 +30,7 @@ pub fn test(args: String) -> FnResult<String> {
     let stdout = dag()
         .pipeline("test")?
         .pkgx()?
-        .with_packages(vec!["gleam", "escript"])?
+        .with_packages(vec!["gleam", "escript", "rebar3"])?
         .with_exec(vec!["gleam", "deps", "download"])?
         .with_exec(vec!["gleam", "test", &args])?
         .stdout()?;
@@ -42,7 +42,7 @@ pub fn build(args: String) -> FnResult<String> {
     let stdout = dag()
         .pipeline("build")?
         .pkgx()?
-        .with_packages(vec!["gleam", "escript"])?
+        .with_packages(vec!["gleam", "escript", "rebar3"])?
         .with_exec(vec!["gleam", "deps", "download"])?
         .with_exec(vec!["gleam", "build", &args])?
         .stdout()?;
