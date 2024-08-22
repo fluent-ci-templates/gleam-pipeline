@@ -16,7 +16,7 @@ jobs:
           wasm: true
           pipeline: deno
           args: |
-            fmts
+            fmt
       - name: Run Dagger Pipelines
         run: |
           dagger -m github.com/fluent-ci-templates/gleam-pipeline functions
